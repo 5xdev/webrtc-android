@@ -23,19 +23,32 @@ jobs:
       #     distribution: "temurin"
       #     cache: gradle
 
-      
-      - run: echo $(pwd)
-      - run: echo $(ls)
-      - run: echo $(node -v)
-      - run: echo $(java --version)
-      - run: echo $(javac --version)
-      - run: echo $(jar --version)
-      - run: echo $(jar --version)
-      - run: echo $(python --version)
-      - run: echo $(python3 --version)
+      - run: |
+          echo $(pwd)
+          echo $(ls)
+          echo $(node -v)
+          echo $(java --version)
+          echo $(javac --version)
+          echo $(jar --version)
+          echo $(jar --version)
+          echo $(python --version)
+          echo $(python3 --version)
 
       - run: python build-webrtc.py --setup --android $(pwd)
-      # - run: 
+      - run: echo $(ls)
+
+      - run: |
+          git checkout -b build-M106 refs/remotes/branch-heads/5249
+          echo $(ls)
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: echo $(ls)
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: python build-webrtc.py --sync --android $(pwd)
+      - run: python build-webrtc.py --build --android $(pwd)
+
+      # - run:
 
     # - name: Grant execute permission for gradlew
     #   working-directory: ./android
