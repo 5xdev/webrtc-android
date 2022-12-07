@@ -18,7 +18,7 @@ jobs:
       - run: mkdir hi && cd hi && echo hello > hello.txt
 
       - store_artifacts:
-          path: /hi/hello.txt
+          path: hi/hello.txt
 
       # - run: python build-webrtc.py --setup --android $(pwd)
       # - run: echo $(ls)
