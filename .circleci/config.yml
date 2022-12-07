@@ -20,10 +20,10 @@ jobs:
       - run: echo $(ls)
 
       - run: git checkout -b build-M106 refs/remotes/branch-heads/5249
-        working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
+          working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
 
       - run: echo $(ls)
-        working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
+          working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
 
       - run: python build-webrtc.py --sync --android $(pwd)
       - run: python build-webrtc.py --build --android $(pwd)
