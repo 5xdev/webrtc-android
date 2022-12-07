@@ -16,11 +16,12 @@ jobs:
       - run: echo $(python3 --version)
       - run: echo $(df -h)
 
-      - run: python build-webrtc.py --setup --android $(pwd)
+      - run: python3 build-webrtc.py --setup --android $(pwd)
       - run: echo $(ls)
 
       - run: cd build_webrtc/webrtc/android/src/ && git checkout -b build-M106 refs/remotes/branch-heads/5249 && ls
-      - run: python build-webrtc.py --sync --android $(pwd)
+      - run: python3 build-webrtc.py --sync --android $(pwd)
+          no_output_timeout: 1h
 
       - run: cd build_webrtc/webrtc/android/src/ && mv test/android/org test/android/cometchat
       - run: cd build_webrtc/webrtc/android/src/ && mv modules/audio_device/android/java/src/org modules/audio_device/android/java/src/cometchat
@@ -39,7 +40,8 @@ jobs:
       - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
       - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
 
-      - run: python build-webrtc.py --build --android $(pwd)
+      - run: python3 build-webrtc.py --build --android $(pwd)
+          no_output_timeout: 2h
 
       - store_artifacts:
           path: build_webrtc/build/android/android-webrtc.zip
