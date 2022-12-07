@@ -1,0 +1,26 @@
+name: Create artifacts for cloudsmith
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: |
+          echo $(pwd)
+          echo $(ls)
+          echo $(node -v)
+          echo $(java --version)
+          echo $(javac --version)
+          echo $(jar --version)
+          echo $(jar --version)
+          echo $(python --version)
+          echo $(python3 --version)
+          echo $(df -h)
