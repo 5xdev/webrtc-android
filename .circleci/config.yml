@@ -19,6 +19,8 @@ jobs:
       - run: echo $(pwd)
       - run: echo $(ls)
       - run: echo $(ls)
+      - run: echo $(ls)
+          path: test
 
       # - run: python build-webrtc.py --setup --android $(pwd)
       # - run: echo $(ls)
