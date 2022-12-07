@@ -15,15 +15,17 @@ jobs:
       - run: echo $(python --version)
       - run: echo $(python3 --version)
       - run: echo $(df -h)
+      - run: mkdir test && cd test
+      - run: echo $(pwd)
 
-      - run: python build-webrtc.py --setup --android $(pwd)
-      - run: echo $(ls)
+      # - run: python build-webrtc.py --setup --android $(pwd)
+      # - run: echo $(ls)
 
-      - run: git checkout -b build-M106 refs/remotes/branch-heads/5249
-          working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
+      # - run: git checkout -b build-M106 refs/remotes/branch-heads/5249
+      #     working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
 
-      - run: echo $(ls)
-          working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
+      # - run: echo $(ls)
+      #     working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
 
-      - run: python build-webrtc.py --sync --android $(pwd)
-      - run: python build-webrtc.py --build --android $(pwd)
+      # - run: python build-webrtc.py --sync --android $(pwd)
+      # - run: python build-webrtc.py --build --android $(pwd)
