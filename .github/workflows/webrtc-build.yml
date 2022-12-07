@@ -23,7 +23,9 @@ jobs:
       #     distribution: "temurin"
       #     cache: gradle
 
+      
       - run: echo $(pwd)
+      - run: echo $(ls)
       - run: echo $(node -v)
       - run: echo $(java --version)
       - run: echo $(javac --version)
