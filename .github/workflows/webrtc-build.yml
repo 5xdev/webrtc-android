@@ -68,17 +68,17 @@ jobs:
 
       # - run:
 
-    # - name: Grant execute permission for gradlew
-    #   working-directory: ./android
-    #   run: chmod +x gradlew
-    # - name: Grant execute permission for create-artifacts.sh
-    #   working-directory: ./android
-    #   run: chmod +x create-artifacts.sh
-    # - name: Create Artifacts
-    #   working-directory: ./android
-    #   run: ./create-artifacts.sh
-    - name: Export Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: android-webrtc.zip
-        path: build_webrtc/build/android/android-webrtc.zip
+      # - name: Grant execute permission for gradlew
+      #   working-directory: ./android
+      #   run: chmod +x gradlew
+      # - name: Grant execute permission for create-artifacts.sh
+      #   working-directory: ./android
+      #   run: chmod +x create-artifacts.sh
+      # - name: Create Artifacts
+      #   working-directory: ./android
+      #   run: ./create-artifacts.sh
+      - name: Export Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-webrtc.zip
+          path: build_webrtc/build/android/android-webrtc.zip
