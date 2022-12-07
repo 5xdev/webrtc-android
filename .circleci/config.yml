@@ -15,21 +15,32 @@ jobs:
       - run: echo $(python --version)
       - run: echo $(python3 --version)
       - run: echo $(df -h)
-      - run: mkdir test && cd test && echo $(ls)
-      - run: echo $(pwd)
-      - run: echo $(ls)
-      - run: echo $(ls)
-      - run: echo $(ls)
-          path: test
+      - run: mkdir hi && cd hi && echo hello > hello.txt
+
+      - store_artifacts:
+          path: /hi/hello.txt
 
       # - run: python build-webrtc.py --setup --android $(pwd)
       # - run: echo $(ls)
 
-      # - run: git checkout -b build-M106 refs/remotes/branch-heads/5249
-      #     working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
-
-      # - run: echo $(ls)
-      #     working_directory: /home/circleci/project/build_webrtc/webrtc/android/src/
-
+      # - run: cd build_webrtc/webrtc/android/src/ && git checkout -b build-M106 refs/remotes/branch-heads/5249 && ls
       # - run: python build-webrtc.py --sync --android $(pwd)
+
+      # - run: cd build_webrtc/webrtc/android/src/ && mv test/android/org test/android/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv modules/audio_device/android/java/src/org modules/audio_device/android/java/src/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv rtc_base/java/src/org rtc_base/java/src/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv sdk/android/tests/src/org sdk/android/tests/src/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv sdk/android/instrumentationtests/src/org sdk/android/instrumentationtests/src/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv sdk/android/native_unittests/org sdk/android/native_unittests/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv sdk/android/src/java/org sdk/android/src/java/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && mv sdk/android/api/org sdk/android/api/cometchat
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*java' -exec sed -i 's/package org\.webrtc\./package cometchat\.webrtc\./g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*java' -exec sed -i 's/import org\.webrtc\./import cometchat\.webrtc\./g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*java' -exec sed -i 's/package org\.webrtc;/package cometchat\.webrtc;/g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*java' -exec sed -i 's/import static org\.webrtc\./import static cometchat\.webrtc\./g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*java' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
+      # - run: cd build_webrtc/webrtc/android/src/ && find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
+
       # - run: python build-webrtc.py --build --android $(pwd)
