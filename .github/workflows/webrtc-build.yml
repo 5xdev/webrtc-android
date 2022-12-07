@@ -16,12 +16,12 @@ jobs:
       #   with:
       #     cache: "npm"
       #     node-version: 14
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: "11"
-          distribution: "temurin"
-          cache: gradle
+      # - name: set up JDK 11
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     java-version: "11"
+      #     distribution: "temurin"
+      #     cache: gradle
 
       - run: echo $(pwd)
       - run: echo $(node -v)
