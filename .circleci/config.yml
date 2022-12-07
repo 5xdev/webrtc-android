@@ -15,8 +15,9 @@ jobs:
       - run: echo $(python --version)
       - run: echo $(python3 --version)
       - run: echo $(df -h)
-      - run: mkdir test && cd test
+      - run: mkdir test && cd test && echo $(ls)
       - run: echo $(pwd)
+      - run: echo $(ls)
 
       # - run: python build-webrtc.py --setup --android $(pwd)
       # - run: echo $(ls)
