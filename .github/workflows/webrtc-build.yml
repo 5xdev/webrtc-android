@@ -34,6 +34,9 @@ jobs:
       - run: echo $(python --version)
       - run: echo $(python3 --version)
 
+      - run: python build-webrtc.py --setup --android $(pwd)
+      # - run: 
+
     # - name: Grant execute permission for gradlew
     #   working-directory: ./android
     #   run: chmod +x gradlew
