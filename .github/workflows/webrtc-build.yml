@@ -37,15 +37,33 @@ jobs:
       - run: python build-webrtc.py --setup --android $(pwd)
       - run: echo $(ls)
 
-      - run: |
-          git checkout -b build-M106 refs/remotes/branch-heads/5249
-          echo $(ls)
+      - run: git checkout -b build-M106 refs/remotes/branch-heads/5249
         working-directory: ./build_webrtc/webrtc/android/src/
 
       - run: echo $(ls)
         working-directory: ./build_webrtc/webrtc/android/src/
 
       - run: python build-webrtc.py --sync --android $(pwd)
+
+      - run: |
+          mv test/android/org test/android/cometchat
+          mv modules/audio_device/android/java/src/org modules/audio_device/android/java/src/cometchat
+          mv rtc_base/java/src/org rtc_base/java/src/cometchat
+          mv sdk/android/tests/src/org sdk/android/tests/src/cometchat
+          mv sdk/android/instrumentationtests/src/org sdk/android/instrumentationtests/src/cometchat
+          mv sdk/android/native_unittests/org sdk/android/native_unittests/cometchat
+          mv sdk/android/src/java/org sdk/android/src/java/cometchat
+          mv sdk/android/api/org sdk/android/api/cometchat
+          find . -type f -name '*java' -exec sed -i 's/package org\.webrtc\./package cometchat\.webrtc\./g' {} +
+          find . -type f -name '*java' -exec sed -i 's/import org\.webrtc\./import cometchat\.webrtc\./g' {} +
+          find . -type f -name '*java' -exec sed -i 's/package org\.webrtc;/package cometchat\.webrtc;/g' {} +
+          find . -type f -name '*java' -exec sed -i 's/import static org\.webrtc\./import static cometchat\.webrtc\./g' {} +
+          find . -type f -name '*java' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+          find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+          find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
+          find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+      
       - run: python build-webrtc.py --build --android $(pwd)
 
       # - run:
@@ -59,9 +77,8 @@ jobs:
     # - name: Create Artifacts
     #   working-directory: ./android
     #   run: ./create-artifacts.sh
-    # - name: Export Artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: pro-android-calls-sdk
-    #     path: |
-    #       android/CometChatCallSDK/null/com/cometchat/pro-android-calls-sdk
+    - name: Export Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: android-webrtc.zip
+        path: build_webrtc/build/android/android-webrtc.zip
