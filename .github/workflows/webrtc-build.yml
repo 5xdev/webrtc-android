@@ -1,0 +1,51 @@
+name: Create artifacts for cloudsmith
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@master
+        with:
+          cache: "npm"
+          node-version: 14
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "temurin"
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        # working-directory: ./android
+        run: echo $(pwd)
+        run: echo $(node -v)
+        run: echo $(java --version)
+        run: echo $(javac --version)
+        run: echo $(jar --version)
+        run: echo $(jar --version)
+        run: echo $(python --version)
+        run: echo $(python3 --version)
+
+    # - name: Grant execute permission for gradlew
+    #   working-directory: ./android
+    #   run: chmod +x gradlew
+    # - name: Grant execute permission for create-artifacts.sh
+    #   working-directory: ./android
+    #   run: chmod +x create-artifacts.sh
+    # - name: Create Artifacts
+    #   working-directory: ./android
+    #   run: ./create-artifacts.sh
+    # - name: Export Artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: pro-android-calls-sdk
+    #     path: |
+    #       android/CometChatCallSDK/null/com/cometchat/pro-android-calls-sdk
