@@ -17,6 +17,7 @@ jobs:
       - run: echo $(df -h)
 
       - run: python3 build-webrtc.py --setup --android $(pwd)
+          no_output_timeout: 1h
       - run: echo $(ls)
 
       - run: cd build_webrtc/webrtc/android/src/ && git checkout -b build-M106 refs/remotes/branch-heads/5249 && ls
