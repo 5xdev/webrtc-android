@@ -50,7 +50,7 @@ jobs:
           find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
           find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
           find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
-          find . -type f -name '*' -exec sed -i 's|libjingle_peerconnection_so|libcomet_jingle_peerconnection_so|g' {} +
+          find . -type f -name '*' -exec sed -i 's|jingle_peerconnection|comet_jingle_peerconnection|g' {} +
         working-directory: ./build_webrtc/webrtc/android/src/
       
       - run: python build-webrtc.py --build --android $(pwd)
