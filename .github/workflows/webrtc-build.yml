@@ -1,10 +1,7 @@
 name: Create artifacts for cloudsmith
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,16 +9,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions/setup-node@master
-      #   with:
-      #     cache: "npm"
-      #     node-version: 14
-      # - name: set up JDK 11
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     java-version: "11"
-      #     distribution: "temurin"
-      #     cache: gradle
 
       - run: |
           echo $(pwd)
@@ -30,9 +17,9 @@ jobs:
           echo $(java --version)
           echo $(javac --version)
           echo $(jar --version)
-          echo $(jar --version)
           echo $(python --version)
           echo $(python3 --version)
+          echo $(df -h)
 
       - run: python build-webrtc.py --setup --android $(pwd)
       - run: echo $(ls)
@@ -62,21 +49,11 @@ jobs:
           find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
           find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
           find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
+          find . -type f -name '*' -exec sed -i 's|libjingle_peerconnection_so|libcomet_jingle_peerconnection_so|g' {} +
         working-directory: ./build_webrtc/webrtc/android/src/
       
       - run: python build-webrtc.py --build --android $(pwd)
 
-      # - run:
-
-      # - name: Grant execute permission for gradlew
-      #   working-directory: ./android
-      #   run: chmod +x gradlew
-      # - name: Grant execute permission for create-artifacts.sh
-      #   working-directory: ./android
-      #   run: chmod +x create-artifacts.sh
-      # - name: Create Artifacts
-      #   working-directory: ./android
-      #   run: ./create-artifacts.sh
       - name: Export Artifacts
         uses: actions/upload-artifact@v3
         with:

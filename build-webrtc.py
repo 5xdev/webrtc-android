@@ -217,7 +217,7 @@ def build(target_dir, platform, debug):
     else:
         for cpu in ANDROID_BUILD_CPUS:
             gn_out_dir = 'out/%s-%s' % (build_type, cpu)
-            ninja_cmd = 'ninja -C %s libwebrtc libjingle_peerconnection_so' % gn_out_dir
+            ninja_cmd = 'ninja -C %s libwebrtc libcomet_jingle_peerconnection_so' % gn_out_dir
             sh(ninja_cmd, env)
 
     # Cleanup build dir
@@ -287,7 +287,7 @@ def build(target_dir, platform, debug):
             lib_dir = os.path.join(build_dir, 'lib', ANDROID_CPU_ABI_MAP[cpu])
             mkdirp(lib_dir)
             gn_out_dir = 'out/%s-%s' % (build_type, cpu)
-            shutil.copy(os.path.join(gn_out_dir, 'libjingle_peerconnection_so.so'), lib_dir)
+            shutil.copy(os.path.join(gn_out_dir, 'libcomet_jingle_peerconnection_so.so'), lib_dir)
 
         sh('jar cvfM libjingle_peerconnection.so.jar lib', cwd=build_dir)
         rmr(os.path.join(build_dir, 'lib'))
