@@ -33,26 +33,57 @@ jobs:
 
       - run: python build-webrtc.py --sync --android $(pwd)
 
-      - run: |
-          mv test/android/org test/android/cometchat
-          mv modules/audio_device/android/java/src/org modules/audio_device/android/java/src/cometchat
-          mv rtc_base/java/src/org rtc_base/java/src/cometchat
-          mv sdk/android/tests/src/org sdk/android/tests/src/cometchat
-          mv sdk/android/instrumentationtests/src/org sdk/android/instrumentationtests/src/cometchat
-          mv sdk/android/native_unittests/org sdk/android/native_unittests/cometchat
-          mv sdk/android/src/java/org sdk/android/src/java/cometchat
-          mv sdk/android/api/org sdk/android/api/cometchat
-          find . -type f -name '*java' -exec sed -i 's/package org\.webrtc\./package cometchat\.webrtc\./g' {} +
-          find . -type f -name '*java' -exec sed -i 's/import org\.webrtc\./import cometchat\.webrtc\./g' {} +
-          find . -type f -name '*java' -exec sed -i 's/package org\.webrtc;/package cometchat\.webrtc;/g' {} +
-          find . -type f -name '*java' -exec sed -i 's/import static org\.webrtc\./import static cometchat\.webrtc\./g' {} +
-          find . -type f -name '*java' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
-          find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
-          find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
-          find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
-          find . -type f -name '*' -exec sed -i 's|jingle_peerconnection|comet_jingle_peerconnection|g' {} +
+      - run: mv test/android/org test/android/cometchat
         working-directory: ./build_webrtc/webrtc/android/src/
-      
+
+      - run: mv modules/audio_device/android/java/src/org modules/audio_device/android/java/src/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: mv rtc_base/java/src/org rtc_base/java/src/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: mv sdk/android/tests/src/org sdk/android/tests/src/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: mv sdk/android/instrumentationtests/src/org sdk/android/instrumentationtests/src/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: mv sdk/android/native_unittests/org sdk/android/native_unittests/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: mv sdk/android/src/java/org sdk/android/src/java/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: mv sdk/android/api/org sdk/android/api/cometchat
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*java' -exec sed -i 's/package org\.webrtc\./package cometchat\.webrtc\./g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*java' -exec sed -i 's/import org\.webrtc\./import cometchat\.webrtc\./g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*java' -exec sed -i 's/package org\.webrtc;/package cometchat\.webrtc;/g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*java' -exec sed -i 's/import static org\.webrtc\./import static cometchat\.webrtc\./g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*java' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
+      - run: find . -type f -name '*' -exec sed -i 's|jingle_peerconnection|comet_jingle_peerconnection|g' {} +
+        working-directory: ./build_webrtc/webrtc/android/src/
+
       - run: python build-webrtc.py --build --android $(pwd)
 
       - name: Export Artifacts
