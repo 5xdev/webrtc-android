@@ -14,10 +14,11 @@ jobs:
       # - name: Install ninja
       #   run: apt install ninja-build
 
-      - name: Install dependencies
+      - name: Install ninja
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build
+
 
       - name: Verify ninja
         run: ninja --version
