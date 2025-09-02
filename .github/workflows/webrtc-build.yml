@@ -92,7 +92,7 @@ jobs:
       - run: python build-webrtc.py --build --android $(pwd)
 
       - name: Export Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-webrtc.zip
           path: build_webrtc/build/android/android-webrtc.zip
