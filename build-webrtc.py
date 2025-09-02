@@ -31,6 +31,7 @@ IOS_BUILD_ARCHS = [
     'simulator:x64'
 ]
 MACOS_BUILD_ARCHS = [
+    'arm64',
     'x64'
 ]
 
@@ -49,8 +50,7 @@ _GN_APPLE_COMMON = [
     'enable_dsyms=true',
     'enable_stripping=true',
     'rtc_enable_symbol_export=false',
-    'rtc_enable_objc_symbol_export=true',
-    'rtc_include_tests=false'
+    'rtc_enable_objc_symbol_export=true'
 ]
 
 _GN_IOS_ARGS = [
@@ -191,11 +191,11 @@ def build(target_dir, platform, debug):
             gn_args = GN_IOS_ARGS % (str(debug).lower(), arch, tenv)
             gn_cmd = 'gn gen %s %s' % (gn_out_dir, gn_args)
             sh(gn_cmd, env)
-        #for arch in MACOS_BUILD_ARCHS:
-        #    gn_out_dir = 'out/%s-macos-%s' % (build_type, arch)
-        #    gn_args = GN_MACOS_ARGS % (str(debug).lower(), arch)
-        #    gn_cmd = 'gn gen %s %s' % (gn_out_dir, gn_args)
-        #    sh(gn_cmd, env)
+        for arch in MACOS_BUILD_ARCHS:
+            gn_out_dir = 'out/%s-macos-%s' % (build_type, arch)
+            gn_args = GN_MACOS_ARGS % (str(debug).lower(), arch)
+            gn_cmd = 'gn gen %s %s' % (gn_out_dir, gn_args)
+            sh(gn_cmd, env)
     else:
         for cpu in ANDROID_BUILD_CPUS:
             gn_out_dir = 'out/%s-%s' % (build_type, cpu)
@@ -210,14 +210,14 @@ def build(target_dir, platform, debug):
             gn_out_dir = 'out/%s-ios-%s-%s' % (build_type, tenv, arch)
             ninja_cmd = 'ninja -C %s framework_objc' % gn_out_dir
             sh(ninja_cmd, env)
-        #for arch in MACOS_BUILD_ARCHS:
-        #    gn_out_dir = 'out/%s-macos-%s' % (build_type, arch)
-        #    ninja_cmd = 'ninja -C %s mac_framework_objc' % gn_out_dir
-        #    sh(ninja_cmd, env)
+        for arch in MACOS_BUILD_ARCHS:
+            gn_out_dir = 'out/%s-macos-%s' % (build_type, arch)
+            ninja_cmd = 'ninja -C %s mac_framework_objc' % gn_out_dir
+            sh(ninja_cmd, env)
     else:
         for cpu in ANDROID_BUILD_CPUS:
             gn_out_dir = 'out/%s-%s' % (build_type, cpu)
-            ninja_cmd = 'ninja -C %s libwebrtc libcomet_jingle_peerconnection_so' % gn_out_dir
+            ninja_cmd = 'ninja -C %s libwebrtc libjingle_peerconnection_so' % gn_out_dir
             sh(ninja_cmd, env)
 
     # Cleanup build dir
@@ -265,33 +265,58 @@ def build(target_dir, platform, debug):
         _IOS_BUILD_ARCHS = [item for item in IOS_BUILD_ARCHS if not item.startswith('simulator')]
         _IOS_BUILD_ARCHS.append(simulators[0])
 
+        # Fat macOS Framework (macos-arm64_x86_64)
+        gn_out_dir = 'out/%s-macos-%s' % (build_type, MACOS_BUILD_ARCHS[0])
+
+        shutil.copytree(os.path.join(gn_out_dir, APPLE_FRAMEWORK_NAME), os.path.join(gn_out_dir, 'fat-' + APPLE_FRAMEWORK_NAME), symlinks=True)
+        out_lib_path = os.path.join(gn_out_dir, 'fat-' + APPLE_FRAMEWORK_NAME, 'Versions', 'Current', 'WebRTC')
+        slice_paths = []
+        for arch in MACOS_BUILD_ARCHS:
+            lib_path = os.path.join('out/%s-macos-%s' % (build_type, arch), APPLE_FRAMEWORK_NAME, 'Versions', 'Current', 'WebRTC')
+            slice_paths.append(lib_path)
+        sh('lipo %s -create -output %s' % (' '.join(slice_paths), out_lib_path))
+
+        orig_framework_path = os.path.join(gn_out_dir, APPLE_FRAMEWORK_NAME)
+        bak_framework_path = os.path.join(gn_out_dir, 'bak-' + APPLE_FRAMEWORK_NAME)
+        fat_framework_path = os.path.join(gn_out_dir, 'fat-' + APPLE_FRAMEWORK_NAME)
+        shutil.move(orig_framework_path, bak_framework_path)
+        shutil.move(fat_framework_path, orig_framework_path)
+
+        # dSYMs
+        shutil.copytree(os.path.join(gn_out_dir, APPLE_DSYM_NAME), os.path.join(gn_out_dir, 'fat-' + APPLE_DSYM_NAME))
+        out_dsym_path = os.path.join(gn_out_dir, 'fat-' + APPLE_DSYM_NAME, 'Contents', 'Resources', 'DWARF', 'WebRTC')
+        slice_paths = []
+        for arch in MACOS_BUILD_ARCHS:
+            dsym_path = os.path.join('out/%s-macos-%s' % (build_type, arch), APPLE_DSYM_NAME, 'Contents', 'Resources', 'DWARF', 'WebRTC')
+            slice_paths.append(dsym_path)
+        sh('lipo %s -create -output %s' % (' '.join(slice_paths), out_dsym_path))
+
         # XCFramework
         xcframework_path = os.path.join(build_dir, 'WebRTC.xcframework')
         xcodebuild_cmd = 'xcodebuild -create-xcframework -output %s' % xcframework_path
+        ## iOS
         for item in _IOS_BUILD_ARCHS:
             tenv, arch = item.split(':')
             gn_out_dir = 'out/%s-ios-%s-%s' % (build_type, tenv, arch)
             xcodebuild_cmd += ' -framework %s' % os.path.abspath(os.path.join(gn_out_dir, APPLE_FRAMEWORK_NAME))
             xcodebuild_cmd += ' -debug-symbols %s' % os.path.abspath(os.path.join(gn_out_dir, APPLE_DSYM_NAME))
-        #for arch in MACOS_BUILD_ARCHS:
-        #    gn_out_dir = 'out/%s-macos-%s' % (build_type, arch)
-        #    xcodebuild_cmd += ' -framework %s' % os.path.join(gn_out_dir, APPLE_FRAMEWORK_NAME)
+        ## macOS (single fat slice)
+        gn_out_dir = 'out/%s-macos-%s' % (build_type, MACOS_BUILD_ARCHS[0])
+        xcodebuild_cmd += ' -framework %s' % os.path.abspath(os.path.join(gn_out_dir, APPLE_FRAMEWORK_NAME))
+        xcodebuild_cmd += ' -debug-symbols %s' % os.path.abspath(os.path.join(gn_out_dir, APPLE_DSYM_NAME))
         sh(xcodebuild_cmd)
-        sh('zip -r WebRTC.xcframework.zip WebRTC.xcframework', cwd=build_dir)
-        rmr(xcframework_path)
+        sh('zip -y -r WebRTC.xcframework.zip WebRTC.xcframework', cwd=build_dir)
     else:
         gn_out_dir = 'out/%s-%s' % (build_type, ANDROID_BUILD_CPUS[0])
         shutil.copy(os.path.join(gn_out_dir, 'lib.java/sdk/android/libwebrtc.jar'), build_dir)
 
         for cpu in ANDROID_BUILD_CPUS:
-            lib_dir = os.path.join(build_dir, 'lib', ANDROID_CPU_ABI_MAP[cpu])
+            lib_dir = os.path.join(build_dir, ANDROID_CPU_ABI_MAP[cpu])
             mkdirp(lib_dir)
             gn_out_dir = 'out/%s-%s' % (build_type, cpu)
-            shutil.copy(os.path.join(gn_out_dir, 'libcomet_jingle_peerconnection_so.so'), lib_dir)
+            shutil.copy(os.path.join(gn_out_dir, 'libjingle_peerconnection_so.so'), lib_dir)
 
-        sh('jar cvfM libjingle_peerconnection.so.jar lib', cwd=build_dir)
-        rmr(os.path.join(build_dir, 'lib'))
-        sh('zip -r android-webrtc.zip *.jar', cwd=build_dir)
+        sh('zip -r android-webrtc.zip *', cwd=build_dir)
 
 
 if __name__ == "__main__":
