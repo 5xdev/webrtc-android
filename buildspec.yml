@@ -15,16 +15,32 @@ phases:
       - apt-get update
       - apt-get install -y ninja-build git curl unzip
       
-      # Install WebRTC build dependencies (this prevents the interactive apt-get failure)
-      - echo "Installing WebRTC build dependencies..."
-      - apt-get install -y build-essential libc6-dev libglib2.0-dev
-      - apt-get install -y libgtk-3-dev libnspr4-dev libnss3-dev
-      - apt-get install -y libx11-dev libxext-dev libxt-dev libxau-dev libxdmcp-dev
-      - apt-get install -y libxcomposite-dev libxcursor-dev libxdamage-dev
-      - apt-get install -y libxfixes-dev libxi-dev libxinerama-dev libxrandr-dev
-      - apt-get install -y libxrender-dev libxss-dev libxtst-dev
-      - apt-get install -y libasound2-dev libpulse-dev libdbus-1-dev
-      - apt-get install -y libudev-dev uuid-dev
+      # Install ALL WebRTC build dependencies to prevent interactive apt-get failure
+      - echo "Installing complete WebRTC build dependencies..."
+      - export DEBIAN_FRONTEND=noninteractive
+      - apt-get install -y at-spi2-core binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabihf
+      - apt-get install -y binutils-mips64el-linux-gnuabi64 binutils-mipsel-linux-gnu bison bzip2 cdbs
+      - apt-get install -y curl dbus-x11 devscripts dpkg-dev elfutils fakeroot fd-find flex git-core
+      - apt-get install -y gperf lib32gcc-s1 lib32stdc++6 lib32z1 libasound2 libasound2-dev libatk1.0-0
+      - apt-get install -y libatspi2.0-0 libatspi2.0-dev libbluetooth-dev libbrlapi-dev libbrlapi0.8
+      - apt-get install -y libbz2-1.0 libbz2-dev libc6 libc6-dev libc6-i386 libcairo2 libcairo2-dev
+      - apt-get install -y libcap-dev libcap2 libcgi-session-perl libcups2 libcups2-dev libcurl4-gnutls-dev
+      - apt-get install -y libdrm-dev libdrm2 libegl1 libelf-dev libevdev-dev libevdev2 libexpat1
+      - apt-get install -y libffi-dev libffi8 libfontconfig1 libfreetype6 libfuse2 libgbm-dev libgbm1
+      - apt-get install -y libgl1 libglib2.0-0 libglib2.0-dev libglu1-mesa-dev libgraphene-1.0-0
+      - apt-get install -y libgtk-3-0 libgtk-3-dev libinput-dev libinput10 libjpeg-dev libkrb5-dev
+      - apt-get install -y libncurses6 libnspr4 libnspr4-dev libnss3 libnss3-dev libpam0g libpam0g-dev
+      - apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libpci-dev libpci3 libpcre3 libpixman-1-0
+      - apt-get install -y libpng16-16 libpulse-dev libpulse0 libsctp-dev libspeechd-dev libspeechd2
+      - apt-get install -y libsqlite3-0 libsqlite3-dev libssl-dev libstdc++6 libsystemd-dev libudev-dev
+      - apt-get install -y libudev1 libuuid1 libva-dev libvulkan-dev libvulkan1 libwayland-egl1
+      - apt-get install -y libwww-perl libx11-6 libx11-xcb1 libxau6 libxcb1 libxcomposite1 libxcursor1
+      - apt-get install -y libxdamage1 libxdmcp6 libxext6 libxfixes3 libxi6 libxinerama1 libxkbcommon-dev
+      - apt-get install -y libxrandr2 libxrender1 libxshmfence-dev libxslt1-dev libxss-dev libxt-dev
+      - apt-get install -y libxtst-dev libxtst6 lighttpd locales mesa-common-dev mutter-common openbox
+      - apt-get install -y p7zip patch perl pkgconf ripgrep rpm ruby uuid-dev wdiff x11-utils
+      - apt-get install -y x11-xserver-utils xcompmgr xserver-xorg-core xserver-xorg-video-dummy xvfb
+      - apt-get install -y xz-utils zip zlib1g zstd build-essential
       
       # Verify installations
       - echo "Verifying tool installations..."
@@ -46,6 +62,8 @@ phases:
       - echo "Contents of current directory:" $(ls -la)
       
       # Setup WebRTC build environment
+      # Note: All WebRTC dependencies are pre-installed in the install phase to avoid interactive prompts
+      # The build script will automatically skip install-build-deps.sh in CodeBuild environment
       - python build-webrtc.py --setup --android $(pwd)
       - echo "Contents after setup:" $(ls -la)
 
