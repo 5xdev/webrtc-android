@@ -1,0 +1,105 @@
+version: 0.2
+
+# AWS CodeBuild specification for building WebRTC Android with CometChat branding
+# This buildspec replicates the GitHub Action workflow for AWS CodeBuild
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+      java: corretto17
+      nodejs: 20
+    commands:
+      # Update package manager and install required tools
+      - echo "Installing required packages..."
+      - apt-get update
+      - apt-get install -y ninja-build git curl unzip
+
+      # Verify installations
+      - echo "Verifying tool installations..."
+      - ninja --version
+      - python --version
+      - java --version
+      - javac --version
+      - node --version
+
+      # Show system information
+      - echo "Current working directory:" $(pwd)
+      - echo "Available disk space:"
+      - df -h
+
+  pre_build:
+    commands:
+      # Initial setup and source checkout
+      - echo "Setting up WebRTC build environment..."
+      - echo "Contents of current directory:" $(ls -la)
+      
+      # Setup WebRTC build environment
+      - python build-webrtc.py --setup --android $(pwd)
+      - echo "Contents after setup:" $(ls -la)
+
+  build:
+    commands:
+      # Checkout specific WebRTC branch
+      - echo "Checking out WebRTC branch M106..."
+      - cd ./build_webrtc/webrtc/android/src/
+      - git checkout -b build-M106 refs/remotes/branch-heads/5249
+      - echo "Contents of WebRTC source:" $(ls -la)
+      - cd ../../../../
+
+      # Sync WebRTC dependencies
+      - echo "Syncing WebRTC dependencies..."
+      - python build-webrtc.py --sync --android $(pwd)
+
+      # Apply CometChat branding changes (rename org.webrtc to cometchat.webrtc)
+      - echo "Applying CometChat branding changes..."
+      - cd ./build_webrtc/webrtc/android/src/
+      
+      # Move directory structures from org to cometchat
+      - mv test/android/org test/android/cometchat
+      - mv modules/audio_device/android/java/src/org modules/audio_device/android/java/src/cometchat
+      - mv rtc_base/java/src/org rtc_base/java/src/cometchat
+      - mv sdk/android/tests/src/org sdk/android/tests/src/cometchat
+      - mv sdk/android/instrumentationtests/src/org sdk/android/instrumentationtests/src/cometchat
+      - mv sdk/android/native_unittests/org sdk/android/native_unittests/cometchat
+      - mv sdk/android/src/java/org sdk/android/src/java/cometchat
+      - mv sdk/android/api/org sdk/android/api/cometchat
+
+      # Update package declarations and imports in Java files
+      - find . -type f -name '*.java' -exec sed -i 's/package org\.webrtc\./package cometchat\.webrtc\./g' {} +
+      - find . -type f -name '*.java' -exec sed -i 's/import org\.webrtc\./import cometchat\.webrtc\./g' {} +
+      - find . -type f -name '*.java' -exec sed -i 's/package org\.webrtc;/package cometchat\.webrtc;/g' {} +
+      - find . -type f -name '*.java' -exec sed -i 's/import static org\.webrtc\./import static cometchat\.webrtc\./g' {} +
+      - find . -type f -name '*.java' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+
+      # Update all other file references
+      - find . -type f -name '*' -exec sed -i 's/org\.webrtc/cometchat\.webrtc/g' {} +
+      - find . -type f -name '*' -exec sed -i 's|org/webrtc|cometchat/webrtc|g' {} +
+      - find . -type f -name '*' -exec sed -i 's|org_webrtc|cometchat_webrtc|g' {} +
+      - find . -type f -name '*' -exec sed -i 's|jingle_peerconnection|comet_jingle_peerconnection|g' {} +
+
+      - cd ../../../../
+
+      # Build WebRTC
+      - echo "Building WebRTC for Android..."
+      - python build-webrtc.py --build --android $(pwd)
+
+  post_build:
+    commands:
+      - echo "Build completed successfully!"
+      - echo "Checking for build artifacts..."
+      - ls -la build_webrtc/build/android/ || echo "Build directory not found"
+
+artifacts:
+  files:
+    - 'build_webrtc/build/android/android-webrtc.zip'
+  name: android-webrtc-$(date +%Y-%m-%d-%H-%M-%S)
+
+cache:
+  paths:
+    - 'build_webrtc/webrtc/**/*'
+
+# Environment configuration for CodeBuild
+# Recommended compute type: BUILD_GENERAL1_LARGE or BUILD_GENERAL1_XLARGE
+# Recommended image: aws/codebuild/standard:7.0 (Ubuntu 22.04)
+# This build requires significant resources due to WebRTC compilation
