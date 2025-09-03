@@ -71,6 +71,13 @@ _GN_ANDROID_ARGS = [
 ]
 GN_ANDROID_ARGS = build_gn_args(_GN_ANDROID_ARGS)
 
+# Android arguments with 16KB page size support for 64-bit architectures
+_GN_ANDROID_ARGS_16KB = [
+    'target_os="android"',
+    'android_64bit_target_cpu_support_16kb_page_size=true'
+]
+GN_ANDROID_ARGS_16KB = build_gn_args(_GN_ANDROID_ARGS_16KB)
+
 
 # Utilities
 
@@ -157,7 +164,7 @@ def sync(target_dir, platform):
     sh('gclient sync -D', env)
 
 
-def build(target_dir, platform, debug):
+def build(target_dir, platform, debug, no_16kb_support=False):
     build_dir = os.path.join(target_dir, 'build', platform)
     build_type = 'Debug' if debug else 'Release'
     depot_tools_dir = os.path.join(target_dir, 'depot_tools')
@@ -199,7 +206,14 @@ def build(target_dir, platform, debug):
     else:
         for cpu in ANDROID_BUILD_CPUS:
             gn_out_dir = 'out/%s-%s' % (build_type, cpu)
-            gn_args = GN_ANDROID_ARGS % (str(debug).lower(), cpu)
+            # Use 16KB page size support for 64-bit architectures (arm64 and x64) unless disabled
+            if cpu in ['arm64', 'x64'] and not no_16kb_support:
+                gn_args = GN_ANDROID_ARGS_16KB % (str(debug).lower(), cpu)
+                print('Building %s with 16KB page size support (Android 15+ compatibility)...' % cpu)
+            else:
+                gn_args = GN_ANDROID_ARGS % (str(debug).lower(), cpu)
+                if cpu in ['arm64', 'x64'] and no_16kb_support:
+                    print('Building %s without 16KB page size support (legacy mode)...' % cpu)
             gn_cmd = 'gn gen %s %s' % (gn_out_dir, gn_args)
             sh(gn_cmd, env)
 
@@ -328,6 +342,7 @@ if __name__ == "__main__":
     parser.add_argument('--ios', help='Use iOS as the target platform', action='store_true')
     parser.add_argument('--android', help='Use Android as the target platform', action='store_true')
     parser.add_argument('--debug', help='Make a Debug build (defaults to false)', action='store_true')
+    parser.add_argument('--no-16kb-support', help='Disable 16KB page size support for Android 64-bit builds', action='store_true', dest='no_16kb_support')
 
     args = parser.parse_args()
 
@@ -365,6 +380,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.build:
-        build(target_dir, platform, args.debug)
-        print('WebRTC build for %s completed in %s' % (platform, target_dir))
+        no_16kb_support = getattr(args, 'no_16kb_support', False) if platform == 'android' else False
+        build(target_dir, platform, args.debug, no_16kb_support)
+        if platform == 'android' and not no_16kb_support:
+            print('WebRTC build for %s with 16KB page size support completed in %s' % (platform, target_dir))
+        else:
+            print('WebRTC build for %s completed in %s' % (platform, target_dir))
         sys.exit(0)
