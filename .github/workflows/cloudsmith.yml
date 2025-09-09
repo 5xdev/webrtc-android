@@ -24,8 +24,8 @@ jobs:
 
       - name: Push AAR + POM to Cloudsmith
         run: |
-          cloudsmith list packages ${{ secrets.CLOUDSMITH_OWNER }}/{{ secrets.CLOUDSMITH_REPO }} --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
-          # cloudsmith push maven ${{ secrets.CLOUDSMITH_OWNER }}/{{ secrets.CLOUDSMITH_REPO }} \
+          cloudsmith list packages ${{ secrets.CLOUDSMITH_OWNER }}/${{ secrets.CLOUDSMITH_REPO }} --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
+          # cloudsmith push maven ${{ secrets.CLOUDSMITH_OWNER }}/${{ secrets.CLOUDSMITH_REPO }} \
           #   path/to/your.aar \
           #   path/to/pom.xml \
           #   --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
