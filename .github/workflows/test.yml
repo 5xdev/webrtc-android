@@ -34,4 +34,6 @@ jobs:
           git clone https://github.com/jitsi/jitsi-meet.git
           cd jitsi-meet
           git checkout jitsi-meet_10431
+          npm i
+          ./android/scripts/release-sdk.sh /tmp/repo
           ls -la
