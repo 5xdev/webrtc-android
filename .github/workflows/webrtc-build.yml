@@ -1,7 +1,7 @@
 name: Create artifacts for cloudsmith
 
 on:
-  push:
+  # push:
   workflow_dispatch:
 
 jobs:
