@@ -1,12 +1,16 @@
-From cd7e845d96aba861a745ca9883cd4d56de8b0d3f Mon Sep 17 00:00:00 2001
-From: honey-cometchat <honey.yadav@cometchat.com>
-Date: Tue, 9 Sep 2025 15:49:45 +0530
-Subject: [PATCH] -
-
----
- android/sdk/build.gradle | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
+diff --git a/android/build.gradle b/android/build.gradle
+index 53684692b..a54220356 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -137,7 +137,7 @@ allprojects {
+             // Release every dependency the SDK has with a -jitsi-XXX qualified version. This allows
+             // us to pin the dependencies and make sure they are always updated, no matter what.
+ 
+-            project.version = "${json.version}-jitsi-${versionQualifierNumber}"
++            project.version = "${json.version}-cometchat-${versionQualifierNumber}"
+ 
+             task jitsiAndroidSourcesJar(type: Jar) {
+                 archiveClassifier = 'sources'
 diff --git a/android/sdk/build.gradle b/android/sdk/build.gradle
 index 6919d2e2e..699c2b8d8 100644
 --- a/android/sdk/build.gradle
@@ -26,6 +30,3 @@ index 6919d2e2e..699c2b8d8 100644
              ) {
                  [
                      "packageReleaseResources",
--- 
-2.39.5 (Apple Git-154)
-

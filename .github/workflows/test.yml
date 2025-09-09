@@ -34,7 +34,7 @@ jobs:
           git clone https://github.com/jitsi/jitsi-meet.git
           cd jitsi-meet
           git checkout jitsi-meet_10431
-          git apply ../0001-.patch
+          git apply ../cc.patch
           npm i
           mkdir -p $RUNNER_TEMP/repo
           ./android/scripts/release-sdk.sh $RUNNER_TEMP/repo
