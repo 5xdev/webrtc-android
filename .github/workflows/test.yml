@@ -34,12 +34,14 @@ jobs:
           git clone https://github.com/jitsi/jitsi-meet.git
           cd jitsi-meet
           git checkout jitsi-meet_10431
-          # git apply ../cc.patch
           npm i
-          # mkdir -p $RUNNER_TEMP/repo
-          mkdir -p ./repo
-          ./android/scripts/release-sdk.sh ./repo
-          ls -la
+
+      - name: Build Jitsi Meet SDK
+        working-directory: jitsi-meet
+        run: |
+          mkdir -p ${{ runner.temp }}/repo
+          ./android/scripts/release-sdk.sh ${{ runner.temp }}/repo
+          ls -la ${{ runner.temp }}/repo
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
