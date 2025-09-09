@@ -36,5 +36,13 @@ jobs:
           git checkout jitsi-meet_10431
           git apply ../0001-.patch
           npm i
-          ./android/scripts/release-sdk.sh /tmp/repo
+          mkdir -p $RUNNER_TEMP/repo
+          ./android/scripts/release-sdk.sh $RUNNER_TEMP/repo
           ls -la
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jitsi-meet-sdk-artifacts
+          path: ${{ runner.temp }}/repo
+          retention-days: 30
