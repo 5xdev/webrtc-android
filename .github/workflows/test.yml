@@ -36,8 +36,9 @@ jobs:
           git checkout jitsi-meet_10431
           # git apply ../cc.patch
           npm i
-          mkdir -p $RUNNER_TEMP/repo
-          ./android/scripts/release-sdk.sh $RUNNER_TEMP/repo
+          # mkdir -p $RUNNER_TEMP/repo
+          mkdir -p ./repo
+          ./android/scripts/release-sdk.sh ./repo
           ls -la
 
       - name: Upload artifacts
