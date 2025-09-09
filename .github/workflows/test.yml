@@ -34,17 +34,13 @@ jobs:
           git clone https://github.com/jitsi/jitsi-meet.git
           cd jitsi-meet
           git checkout jitsi-meet_10431
+          git apply ../*.patch
           npm i
 
       - name: Build Jitsi Meet SDK
         working-directory: jitsi-meet
         run: |
           mkdir -p ${{ runner.temp }}/repo
-          cd ${{ runner.temp }}/repo
-          git init
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-          cd -
           ./android/scripts/release-sdk.sh ${{ runner.temp }}/repo
           ls -la ${{ runner.temp }}/repo
 

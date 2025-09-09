@@ -11,22 +11,3 @@ index 53684692b..a54220356 100644
  
              task jitsiAndroidSourcesJar(type: Jar) {
                  archiveClassifier = 'sources'
-diff --git a/android/sdk/build.gradle b/android/sdk/build.gradle
-index 6919d2e2e..699c2b8d8 100644
---- a/android/sdk/build.gradle
-+++ b/android/sdk/build.gradle
-@@ -176,9 +176,11 @@ android.libraryVariants.all { def variant ->
-     if (variant.name.toLowerCase().contains("release")) {
-         rootProject.subprojects.each { subproject ->
-             if (
--                subproject.name.startsWith("react-native-") ||
--                subproject.name.startsWith("@react-native-") ||
--                subproject.name.startsWith("@giphy/")
-+                subproject.name.startsWith("react-native-async-storage") ||
-+                subproject.name.startsWith("react-native-background-timer") ||
-+                subproject.name.startsWith("react-native-performance") ||
-+                subproject.name.startsWith("react-native-svg") ||
-+                subproject.name.startsWith("react-native-webrtc")
-             ) {
-                 [
-                     "packageReleaseResources",
