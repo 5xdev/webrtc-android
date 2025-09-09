@@ -1,9 +1,6 @@
 name: Check Java and Node Versions
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
