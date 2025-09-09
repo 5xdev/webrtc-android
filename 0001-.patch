@@ -1,0 +1,31 @@
+From cd7e845d96aba861a745ca9883cd4d56de8b0d3f Mon Sep 17 00:00:00 2001
+From: honey-cometchat <honey.yadav@cometchat.com>
+Date: Tue, 9 Sep 2025 15:49:45 +0530
+Subject: [PATCH] -
+
+---
+ android/sdk/build.gradle | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/android/sdk/build.gradle b/android/sdk/build.gradle
+index 6919d2e2e..699c2b8d8 100644
+--- a/android/sdk/build.gradle
++++ b/android/sdk/build.gradle
+@@ -176,9 +176,11 @@ android.libraryVariants.all { def variant ->
+     if (variant.name.toLowerCase().contains("release")) {
+         rootProject.subprojects.each { subproject ->
+             if (
+-                subproject.name.startsWith("react-native-") ||
+-                subproject.name.startsWith("@react-native-") ||
+-                subproject.name.startsWith("@giphy/")
++                subproject.name.startsWith("react-native-async-storage") ||
++                subproject.name.startsWith("react-native-background-timer") ||
++                subproject.name.startsWith("react-native-performance") ||
++                subproject.name.startsWith("react-native-svg") ||
++                subproject.name.startsWith("react-native-webrtc")
+             ) {
+                 [
+                     "packageReleaseResources",
+-- 
+2.39.5 (Apple Git-154)
+
