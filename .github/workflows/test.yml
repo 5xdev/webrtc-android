@@ -30,12 +30,13 @@ jobs:
         run: |
           git clone https://github.com/jitsi/jitsi-meet.git
           cd jitsi-meet
-          git checkout jitsi-meet_10431
+          # git checkout jitsi-meet_10431
           git apply ../*.patch
           npm i
+          npm i react-native-webrtc/react-native-webrtc
 
-      - name: Setup upterm session
-        uses: owenthereal/action-upterm@v1
+      # - name: Setup upterm session
+      #   uses: owenthereal/action-upterm@v1
 
       - name: Build Jitsi Meet SDK
         working-directory: jitsi-meet
