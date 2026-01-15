@@ -7,7 +7,7 @@ index 53684692b..a54220356 100644
              // us to pin the dependencies and make sure they are always updated, no matter what.
  
 -            project.version = "${json.version}-jitsi-${versionQualifierNumber}"
-+            project.version = "${json.version}-cometchat-${versionQualifierNumber}"
++            project.version = "${json.version}a-cometchat-${versionQualifierNumber}"
  
              task jitsiAndroidSourcesJar(type: Jar) {
                  archiveClassifier = 'sources'
