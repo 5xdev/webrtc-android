@@ -2,9 +2,9 @@ name: Publish AAR to Cloudsmith
 
 on:
   workflow_dispatch:   # run manually
-  push:
-    branches:
-      - main           # or whichever branch you want to publish from
+  # push:
+  #   branches:
+  #     - main           # or whichever branch you want to publish from
 
 jobs:
   publish:
